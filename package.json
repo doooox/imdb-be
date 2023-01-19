@@ -5,7 +5,18 @@
   "scripts": {},
   "private": true,
   "dependencies": {
+    "@types/bcryptjs": "^2.4.2",
+    "@types/cookie-parser": "^1.4.3",
+    "@types/express-session": "^1.17.5",
+    "@types/jsonwebtoken": "^9.0.1",
+    "bcryptjs": "^2.4.3",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
     "express": "^4.18.1",
+    "express-jwt": "^8.3.0",
+    "express-session": "^1.17.3",
+    "express-validator": "^6.14.2",
+    "jsonwebtoken": "^9.0.0",
     "tslib": "^2.3.0"
   },
   "devDependencies": {
@@ -16,6 +27,7 @@
     "@nrwl/node": "15.5.2",
     "@nrwl/webpack": "15.5.2",
     "@nrwl/workspace": "15.5.2",
+    "@types/cors": "^2.8.13",
     "@types/express": "4.17.13",
     "@types/jest": "28.1.1",
     "@types/node": "18.7.1",
