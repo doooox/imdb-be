@@ -22,7 +22,7 @@ export const createApp = () => {
     resave: false,
     saveUninitialized: true,
     cookie: {
-      secure: false,
+      secure: app.get("env") === 'production',
       maxAge: 1000 * 60 * 60 * 3
     }
   }))

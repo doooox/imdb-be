@@ -16,7 +16,8 @@ const authSchema = new Schema<IAuth>({
 
   password: {
     type: String,
-    required: true
+    required: true,
+    minlength: 6,
   },
 },
   {

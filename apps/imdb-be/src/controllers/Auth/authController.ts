@@ -1,28 +1,26 @@
 import { Request, Response } from "express";
 import Auth from "../../models/Auth/authModel"
 import { genSalt, hash } from "bcryptjs";
-import { createUserToken } from "../../helpers/Auth/authHelpers";
 import { responseMessage } from "../../utils/helpers";
 
-
+const errorMessage = {
+  "errors": [
+    {
+      "msg": "passwords dont match",
+      "param": "confirmPassword",
+      "location": "body"
+    }
+  ]
+}
 
 export const registerUser = async (req: Request, res: Response) => {
   const { email, name, password, confirmPassword } = req.body
 
   if (password !== confirmPassword) {
-    return res.status(400).send({
-      "errors": [
-        {
-          "value": `${password}`,
-          "msg": "passwords dont match",
-          "param": "confirmPassword",
-          "location": "body"
-        }
-      ]
-    })
+    return res.status(400).send(errorMessage)
   }
 
-  const userExists = await Auth.findOne({ email })
+  const userExists = await Auth.exists({ email })
 
   if (userExists) {
     return responseMessage(403, res, "User registerd!")
@@ -40,7 +38,6 @@ export const registerUser = async (req: Request, res: Response) => {
 
   if (user) {
     req.session.user = user
-    console.log(req.session);
 
     res.status(201).send({
       name: user.name,
@@ -51,9 +48,3 @@ export const registerUser = async (req: Request, res: Response) => {
   }
 }
 
-
-// cookie("token", createUserToken(user), {
-//   httpOnly: true,
-//   // secure: https
-
-// })
