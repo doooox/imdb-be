@@ -1,6 +1,6 @@
-import { body, checkSchema } from "express-validator"
+import { checkSchema } from "express-validator"
 
-const registerValidator = checkSchema({
+const singupValidator = checkSchema({
   email: {
     in: "body",
     isEmail: true,
@@ -20,4 +20,4 @@ const registerValidator = checkSchema({
   },
 })
 
-export default registerValidator
+export default singupValidator
