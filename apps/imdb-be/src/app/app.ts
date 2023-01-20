@@ -29,8 +29,6 @@ export const createApp = () => {
 
   app.use("/api", router);
 
-
-
   return app
 }
 

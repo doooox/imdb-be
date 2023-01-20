@@ -1,7 +1,5 @@
 import mongooses from "mongoose";
 
-
-
 const connectDB = async () => {
   const dbName = process.env.NX_MONGO_URI
   try {
