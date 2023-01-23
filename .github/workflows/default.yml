@@ -8,4 +8,4 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: run test script
-        run: npx nx test
+        run: ./api_test.sh
