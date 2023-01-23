@@ -13,7 +13,7 @@ const errorMessage = {
   ]
 }
 
-export const registerUser = async (req: Request, res: Response) => {
+export const singupUser = async (req: Request, res: Response) => {
   const { email, name, password, confirmPassword } = req.body
 
   if (password !== confirmPassword) {

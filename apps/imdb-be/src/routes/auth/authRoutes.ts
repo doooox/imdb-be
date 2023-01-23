@@ -1,17 +1,15 @@
 import * as express from 'express'
-import { registerUser } from '../../controllers/Auth/authController'
+import { singiUser, singoutUser, singupUser } from '../../controllers/Auth/authController'
 import validateRequest from '../../middleware/validation/validationMiddleware'
-import registerValidator from "../../validator/Auth/registerValidator"
 import isAuth, { isNotAuth } from '../../middleware/Auth/authMiddleware'
-
-
-
+import singupValidator from '../../validator/Auth/registerValidator'
+import singinValidator from '../../validator/Auth/singInValidator'
 
 const authRouter = express.Router()
 
-authRouter.post("/register", registerValidator, isNotAuth, validateRequest, registerUser)
-authRouter.get("/", isAuth, (req, res) => {
-  res.send("Auth working")
-})
+authRouter.post("/singup", singupValidator, isNotAuth, validateRequest, singupUser)
+authRouter.post("/singin", singinValidator, isNotAuth, validateRequest, singiUser)
+authRouter.post("/singout", isAuth, singoutUser)
+
 
 export default authRouter
