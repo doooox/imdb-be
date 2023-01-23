@@ -9,13 +9,13 @@ const singupValidator = checkSchema({
   name: {
     in: "body",
     notEmpty: true,
-    errorMessage: "Enter name"
+    errorMessage: "Name is required!"
   },
   password: {
     in: "body",
     isLength: {
       options: { min: 6 },
-      errorMessage: "Password must have at least 6 chars"
+      errorMessage: "Password must have at least 6 chars!"
     }
   },
 })

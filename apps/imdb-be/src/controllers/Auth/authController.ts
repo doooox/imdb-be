@@ -3,7 +3,7 @@ import Auth from "../../models/Auth/authModel"
 import { genSalt, hash, compare } from "bcryptjs";
 import { responseMessage } from "../../utils/helpers";
 
-const errorMessage = {
+const errorMessageConfirmPassword = {
   "errors": [
     {
       "msg": "passwords dont match",
@@ -17,7 +17,7 @@ export const singupUser = async (req: Request, res: Response) => {
   const { email, name, password, confirmPassword } = req.body
 
   if (password !== confirmPassword) {
-    return res.status(400).send(errorMessage)
+    return res.status(400).send(errorMessageConfirmPassword)
   }
 
   const userExists = await Auth.exists({ email })
