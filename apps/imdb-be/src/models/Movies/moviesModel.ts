@@ -19,7 +19,7 @@ const movieSchema = new Schema<IMovie>({
     type: String,
     required: true
   },
-  genre: Genre
+  genre: [Genre]
 }, {
   timestamps: true
 
