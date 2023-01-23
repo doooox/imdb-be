@@ -53,13 +53,13 @@ export const singiUser = async (req: Request, res: Response) => {
   const user = await Auth.findOne({ email })
 
   if (!user) {
-    return responseMessage(404, res, "No user found!")
+    return responseMessage(404, res, "Invalid email or password")
   }
 
   const matchingPasswords = await compare(password, user.password)
 
   if (!matchingPasswords) {
-    return responseMessage(400, res, "Invalid password")
+    return responseMessage(400, res, "Invalid email or password")
   }
 
   req.session.user = user
