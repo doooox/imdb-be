@@ -18,10 +18,12 @@
     "express-session": "^1.17.3",
     "express-validator": "^6.14.2",
     "jsonwebtoken": "^9.0.0",
+    "mongodb": "^4.13.0",
     "mongoose": "^6.8.4",
     "tslib": "^2.3.0"
   },
   "devDependencies": {
+    "@faker-js/faker": "^7.6.0",
     "@nrwl/eslint-plugin-nx": "15.5.2",
     "@nrwl/express": "15.5.2",
     "@nrwl/jest": "15.5.2",
