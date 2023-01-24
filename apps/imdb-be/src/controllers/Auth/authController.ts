@@ -66,8 +66,9 @@ export const singoutUser = async (req: Request, res: Response) => {
   req.session.destroy(err => {
     if (err) {
       responseMessage(400, res, "Unable to log out!")
+
     } else {
-      responseMessage(200, res, "User is logged out!")
+      res.status(200).json({ message: "User is logged out" })
     }
   })
 
