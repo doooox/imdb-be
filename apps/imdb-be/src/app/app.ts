@@ -5,6 +5,8 @@ import session = require('express-session');
 import * as cors from "cors"
 import { corsOptions } from '../utils/static';
 import * as cookieParser from "cookie-parser"
+import { serve, setup } from "swagger-ui-express"
+import * as swaggerDocument from "./swagger.json"
 
 export const createApp = () => {
 
@@ -28,7 +30,8 @@ export const createApp = () => {
   }))
 
   app.use("/api", router);
-
+  app.use("/api-docs", serve)
+  app.get("/api-docs", setup(swaggerDocument))
   return app
 }
 
