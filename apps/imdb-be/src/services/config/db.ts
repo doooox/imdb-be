@@ -3,7 +3,7 @@ import mongooses from "mongoose";
 const connectDB = async () => {
   const dbName = process.env.NX_MONGO_URI
   try {
-    await mongooses.connect(`mongodb://localhost/${dbName}`)
+    await mongooses.connect(dbName)
     console.log(`MongoDB connected ${dbName}`);
 
   } catch (error) {

@@ -1,0 +1,12 @@
+name: Default
+on: [push]
+
+jobs:
+  test-api:
+    name: API Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ankane/setup-mongodb@v1
+      - name: run test script
+        run: ./api_test.sh
