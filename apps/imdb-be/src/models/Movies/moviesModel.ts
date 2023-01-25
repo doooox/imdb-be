@@ -8,7 +8,8 @@ const movieSchema = new Schema<IMovie>({
   title: {
     type: String,
     required: true,
-    min: [2, "Title must contain at least 2 characters"]
+    min: [2, "Title must contain at least 2 characters"],
+    unique: true
   },
   description: {
     type: String,

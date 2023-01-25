@@ -9,9 +9,16 @@ afterEach(async () => {
     await mongoose.connection.db.dropDatabase()
   }
 })
+const data = { email: "test@mail.com", name: "test", password: '123456', confirmPassword: "123456" }
+export const createTestUser = async () => {
+
+  const response = await request(app).post("/api/auth/singup").send(data)
+  return response
+}
 
 describe("Singin test", () => {
   it("Should sing in user to app", async () => {
+    await createTestUser()
     const data = { email: 'test@mail.com', password: "123456" }
     const response = await request(app).post("/api/auth/singin").send(data);
 
@@ -36,16 +43,13 @@ describe("Singin test", () => {
 
     expect(response.body.errors[0].msg).toBe("Invalid password")
     expect(response.status).toBe(400)
-
-    const dbRecord = await Auth.exists({ email: data.email });
-    expect(dbRecord).toBe(null)
   });
+
 });
 
 describe("Singup test", () => {
   it("Should return user has been registerd", async () => {
-    const data = { email: "test1@mail.com", name: "test", password: '123456', confirmPassword: "123456" }
-    const response = await request(app).post("/api/auth/singup").send(data)
+    const response = await createTestUser()
 
     expect(response.body.name).toBe(data.name)
     expect(response.body.email).toBe(data.email)
@@ -53,18 +57,11 @@ describe("Singup test", () => {
   })
 
   it("Should return user is alredy registerd", async () => {
-    const data = { email: "test1@mail.com", name: "test", password: '123456', confirmPassword: "123456" }
+    await createTestUser()
     const response = await request(app).post("/api/auth/singup").send(data)
 
-    expect(response.body.name).toBe(data.name)
-    expect(response.body.email).toBe(data.email)
-    expect(response.status).toBe(201)
-
-    const response1 = await request(app).post("/api/auth/singup").send(data);
-
-    expect(response1.body.errors[0].msg).toBe("User registerd!");
-    expect(response1.status).toBe(403)
-
+    expect(response.body.errors[0].msg).toBe("User already registerd!");
+    expect(response.status).toBe(403)
   })
 
   it("Should return passwords must match", async () => {
@@ -78,12 +75,25 @@ describe("Singup test", () => {
 })
 
 describe("Singout test", () => {
-  it("Should logout user", async () => {
+  it("Should send logout error ", async () => {
     const response = await request(app).post("/api/auth/singout")
 
     expect(response.body.errors[0].msg).toBe("User not authenticated!")
     expect(response.status).toBe(401)
   })
+  it("Should logout user", async () => {
+    const response = await createTestUser()
+    const cookie = response.headers["set-cookie"]
+
+    expect(response.body.email).toBe(data.email)
+    expect(response.status).toBe(201)
+
+
+    const response1 = await request(app).post("/api/auth/singout").set("Cookie", cookie[0])
+    expect(response1.body.message).toBe("User is logged out")
+    expect(response1.status).toBe(200)
+  })
 
 })
+
 

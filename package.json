@@ -21,6 +21,7 @@
     "jsonwebtoken": "^9.0.0",
     "mongodb": "^4.13.0",
     "mongoose": "^6.8.4",
+    "supertest-session": "^4.1.0",
     "swagger-ui-express": "^4.6.0",
     "tslib": "^2.3.0"
   },
