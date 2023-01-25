@@ -20,9 +20,10 @@ beforeAll(async () => {
   cookie = response.headers["set-cookie"]
 })
 
+const data = { title: "Movie test", description: "Description movie test", coverImage: 'coverImage movie test', genre: [{ name: "Action" }, { name: "Comedy" }] }
+
 describe("Create movie test", () => {
   it("Should return movie created", async () => {
-    const data = { title: "Movie test", description: "Description movie test", coverImage: 'coverImage movie test', genre: [{ name: "Action" }, { name: "Comedy" }] }
     const response = await request(app).post("/api/movies/create").set("Cookie", cookie[0]).send(data)
 
     expect(response.body.title).toBe(data.title)
@@ -37,7 +38,6 @@ describe("Create movie test", () => {
   })
 
   it("Should return user not authenticated", async () => {
-    const data = { title: "Movie test", description: "Description movie test", coverImage: 'coverImage movie test', genre: [{ name: "Action" }, { name: "Comedy" }] }
     const response = await request(app).post("/api/movies/create").send(data)
 
     expect(response.body.errors[0].msg).toBe("User not authenticated!")
@@ -53,7 +53,6 @@ describe("Create movie test", () => {
   })
 
   it("Should return movie already exists", async () => {
-    const data = { title: "Movie test", description: "Description movie test", coverImage: 'coverImage movie test', genre: [{ name: "Action" }, { name: "Comedy" }] }
     const response = await request(app).post("/api/movies/create").set("Cookie", cookie[0]).send(data)
 
     expect(response.body.title).toBe(data.title)
