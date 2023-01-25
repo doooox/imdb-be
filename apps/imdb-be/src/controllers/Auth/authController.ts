@@ -3,20 +3,17 @@ import Auth from "../../models/Auth/authModel"
 import { genSalt, hash, compare } from "bcryptjs";
 import { responseMessage } from "../../utils/helpers";
 
-
-
 export const singupUser = async (req: Request, res: Response) => {
   const { email, name, password, confirmPassword } = req.body
 
   if (password !== confirmPassword) {
-    responseMessage(400, res, "Passwords don't match!")
+    return responseMessage(400, res, "Passwords don't match!")
   }
 
   const userExists = await Auth.exists({ email })
 
   if (userExists) {
-    return responseMessage(403, res, "User registerd!")
-
+    return responseMessage(403, res, "User already registerd!")
   }
 
   const salt = await genSalt(10)
@@ -31,13 +28,12 @@ export const singupUser = async (req: Request, res: Response) => {
   if (user) {
     req.session.user = user
 
-    res.status(201).send({
+    return res.status(201).send({
       name: user.name,
       email: user.email
     })
-  } else {
-    responseMessage(400, res, "Invalid user data")
   }
+  responseMessage(400, res, "Invalid user data")
 }
 
 export const singiUser = async (req: Request, res: Response) => {
@@ -65,11 +61,9 @@ export const singiUser = async (req: Request, res: Response) => {
 export const singoutUser = async (req: Request, res: Response) => {
   req.session.destroy(err => {
     if (err) {
-      responseMessage(400, res, "Unable to log out!")
-
-    } else {
-      res.status(200).json({ message: "User is logged out" })
+      return responseMessage(400, res, "Unable to log out!")
     }
+    res.status(200).json({ message: "User is logged out" })
   })
 
 }
