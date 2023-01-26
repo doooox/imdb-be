@@ -23,6 +23,7 @@ const moviesValidator = checkSchema({
     in: "body",
     notEmpty: true,
     errorMessage: "Cover image field is required",
+    isURL: true
   },
   genre: {
     in: "body",

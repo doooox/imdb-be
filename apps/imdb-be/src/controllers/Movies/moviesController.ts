@@ -1,15 +1,17 @@
 import { Request, Response } from "express";
 import Movie from "../../models/Movies/moviesModel"
+import Genre from "../../models/Movies/genreModel"
 import { responseObject, responseMessage } from "../../utils/helpers";
+import { IGenre } from "../../types/Movies/moviesTypes";
+
 
 
 export const getMovies = async (req: Request, res: Response) => {
 
   const movies = await Movie.find()
 
-  if (movies) {
-    responseObject(200, res, movies)
-  } else { responseMessage(200, res, "No moves were found!") }
+  if (movies) return responseObject(200, res, movies)
+  responseMessage(200, res, "No moves were found!")
 
 }
 
@@ -21,20 +23,18 @@ export const createMovie = async (req: Request, res: Response) => {
     return responseMessage(403, res, "Movie already exists")
   }
 
+  const genres = await Promise.all(genre.map(async (genre: IGenre) => {
+    return await Genre.findById(genre._id)
+  }))
   const movie = await Movie.create({
     title,
     description,
     coverImage,
-    genre
+    genres
   })
 
   if (movie) {
-    return res.status(201).send({
-      title: movie.title,
-      description: movie.description,
-      coverImage: movie.coverImage,
-      genre: movie.genre
-    })
+    return res.status(201).send(movie)
   }
 
   responseMessage(400, res, "Invalid movie data")

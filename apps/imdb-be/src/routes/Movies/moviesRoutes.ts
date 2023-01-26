@@ -7,6 +7,6 @@ import moviesValidator from '../../validator/Movies/movieValidator'
 const moviesRouter = express.Router()
 
 moviesRouter.get("/", getMovies, isAuth)
-moviesRouter.post("/create", isAuth, moviesValidator, validateRequest, createMovie)
+moviesRouter.post("/create", moviesValidator, validateRequest, createMovie)
 
 export default moviesRouter

@@ -1,5 +1,5 @@
 export interface IMovie {
-  id: string,
+  _id: string,
   title: string,
   description: string,
   coverImage: string,
@@ -7,6 +7,6 @@ export interface IMovie {
 }
 
 export interface IGenre {
-  id: string,
+  _id: string,
   name: string
 }
