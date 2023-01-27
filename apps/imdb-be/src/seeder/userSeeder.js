@@ -9,11 +9,12 @@ const bcryptjs = require('bcryptjs');
     await client.connect();
     const collection = client.db().collection('auths');
     const salt = await bcryptjs.genSalt(10);
-    const hashedPassword = await bcryptjs.hash('123456', salt);
+    const hashedPassword = await bcryptjs.hash('admin123', salt);
     const data = {
-      email: 'test@mail.com',
-      name: 'test',
+      email: 'admin@admin.com',
+      name: 'Admin',
       password: hashedPassword,
+      isAdmin: true,
     };
     const users = [];
     for (let i = 0; i < 10; i++) {
@@ -21,6 +22,7 @@ const bcryptjs = require('bcryptjs');
         email: faker.faker.internet.email(),
         name: faker.faker.name.fullName(),
         password: hashedPassword,
+        isAdmin: false,
       };
       users.push(user);
     }
