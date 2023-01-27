@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import Auth from "../../models/Auth/authModel"
 import { genSalt, hash, compare } from "bcryptjs";
 import { responseMessage } from "../../utils/helpers";
+import { isAdmin } from "../../middleware/Auth/authMiddleware";
 
 export const singupUser = async (req: Request, res: Response) => {
   const { email, name, password, confirmPassword } = req.body
@@ -54,7 +55,8 @@ export const singiUser = async (req: Request, res: Response) => {
 
   res.status(201).send({
     name: user.name,
-    email: user.email
+    email: user.email,
+    isAdmin: user.isAdmin
   })
 }
 
