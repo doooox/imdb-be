@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
-import Genre from "../../models/Movies/genreModel"
+import Genres from "../../models/Movies/genreModel"
 import { responseObject, responseMessage } from "../../utils/helpers";
 
 export const getGenres = async (req: Request, res: Response) => {
-  const genres = await Genre.find()
+  const genres = await Genres.find()
 
   if (genres) return responseObject(200, res, genres)
 
