@@ -17,15 +17,16 @@ export const createApp = () => {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
   app.set("trust proxy", 1)
-  app.use(cookieParser())
+  // app.use(cookieParser())
   app.use(session({
     name: "session",
     secret: process.env.NX_SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
     cookie: {
-      secure: app.get("env") === 'production',
-      maxAge: 1000 * 60 * 60 * 3
+      secure: false,
+      maxAge: 1000 * 60 * 60 * 3,
+      httpOnly: true,
     }
   }))
 

@@ -9,4 +9,5 @@ const moviesRouter = express.Router()
 moviesRouter.get("/", isAuth, getMovies)
 moviesRouter.post("/create", isAuth, isAdmin, moviesValidator, validateRequest, createMovie)
 
+
 export default moviesRouter

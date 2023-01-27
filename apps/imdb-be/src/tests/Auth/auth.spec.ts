@@ -9,7 +9,7 @@ afterEach(async () => {
     await mongoose.connection.db.dropDatabase()
   }
 })
-const data = { email: "test@mail.com", name: "test", password: '123456', confirmPassword: "123456" }
+const data = { email: "admin@admin.com", name: "admin", password: 'admin123', confirmPassword: "admin123" }
 export const createTestUser = async () => {
 
   const response = await request(app).post("/api/auth/singup").send(data)
@@ -19,7 +19,7 @@ export const createTestUser = async () => {
 describe("Singin test", () => {
   it("Should sing in user to app", async () => {
     await createTestUser()
-    const data = { email: 'test@mail.com', password: "123456" }
+    const data = { email: 'admin@admin.com', password: "admin123" }
     const response = await request(app).post("/api/auth/singin").send(data);
 
     expect(response.body.email).toBe(data.email)
@@ -38,7 +38,7 @@ describe("Singin test", () => {
   });
 
   it("Should return error about invalid password", async () => {
-    const data = { email: 'test@mail.com', password: "" }
+    const data = { email: 'admin@admin.com', password: "" }
     const response = await request(app).post("/api/auth/singin").send(data);
 
     expect(response.body.errors[0].msg).toBe("Invalid password")
