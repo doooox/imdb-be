@@ -1,12 +1,12 @@
 export interface IMovie {
-  id: string,
+  _id: string,
   title: string,
   description: string,
   coverImage: string,
-  genre: IGenre[]
+  genres: IGenres[]
 }
 
-export interface IGenre {
-  id: string,
+export interface IGenres {
+  _id: string,
   name: string
 }

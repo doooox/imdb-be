@@ -15,14 +15,15 @@ const faker = require('@faker-js/faker');
       const movie = {
         title: faker.faker.name.fullName(),
         description: faker.faker.lorem.paragraphs(),
-        coverImage: faker.faker.image.business(),
-        genre: [],
+        coverImage:
+          'https://trailers.apple.com/trailers/paramount/dungeons-dragons-honor-among-thieves/images/poster_2x.jpg',
+        genres: [],
       };
       const rundomNumber = Math.floor(Math.random() * genre.length);
       for (let i = 0; i < rundomNumber; i++) {
         const rundomNumber = Math.floor(Math.random() * genre.length);
-        if (!movie.genre.includes(genre[rundomNumber])) {
-          movie.genre.push(genre[rundomNumber]);
+        if (!movie.genres.includes(genre[rundomNumber])) {
+          movie.genres.push(genre[rundomNumber]);
         }
       }
       movies.push(movie);

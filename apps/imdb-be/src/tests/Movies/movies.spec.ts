@@ -2,10 +2,13 @@ import { createApp } from '../../app/app'
 import * as request from "supertest"
 import mongoose from 'mongoose';
 import { Cookie } from 'express-session';
-import Movie from "../../models/Movies/moviesModel"
+import Movie from "../../models/Movies/movieModel"
 import { createTestUser } from '../Auth/auth.spec';
+import Genres from "../../models/Movies/genreModel"
+import { IGenres, IMovie } from '../../types/Movies/moviesTypes';
 
 const app = createApp();
+
 let cookie: Cookie | undefined
 afterEach(async () => {
   if (mongoose.connection.db) {
@@ -15,22 +18,62 @@ afterEach(async () => {
 
 beforeAll(async () => {
   await createTestUser()
-  const data = { email: 'test@mail.com', password: "123456" }
+  const data = { email: 'admin@admin.com', password: "admin123" }
   const response = await request(app).post("/api/auth/singin").send(data);
   cookie = response.headers["set-cookie"]
 })
 
-const data = { title: "Movie test", description: "Description movie test", coverImage: 'coverImage movie test', genre: [{ name: "Action" }, { name: "Comedy" }] }
+const genresData =
+{
+  name: "genre 1"
+}
+let testGenre: IGenres | undefined = undefined
+let data: IMovie | undefined = undefined
+
+beforeEach(async () => {
+  testGenre = await Genres.create(genresData)
+  data = {
+    _id: "123rfdsafd", title: "Movie test", description: "Description movie test", coverImage: 'https://trailers.apple.com/trailers/paramount/dungeons-dragons-honor-among-thieves/images/poster_2x.jpg', genres: [{
+      _id: testGenre._id,
+      name: testGenre.name
+    }]
+  }
+})
+
+export const createMovie = async () => {
+
+  const response = await request(app).post("/api/movies/create").set("Cookie", cookie[0]).send(data)
+  return response
+}
+
+describe("Get movies test", () => {
+  it("Should return get route", async () => {
+    await createMovie()
+    const response = await request(app).get("/api/movies").set("Cookie", cookie[0])
+
+    expect(response.body[0].title).toBe(data.title)
+    expect(response.status).toBe(200)
+  })
+
+  it("Should return not auth", async () => {
+    await createMovie()
+    const response = await request(app).get("/api/movies")
+
+    expect(response.body.errors[0].msg).toBe("User not authenticated!")
+    expect(response.status).toBe(401)
+  })
+})
 
 describe("Create movie test", () => {
   it("Should return movie created", async () => {
-    const response = await request(app).post("/api/movies/create").set("Cookie", cookie[0]).send(data)
+    const response = await createMovie()
+
+
 
     expect(response.body.title).toBe(data.title)
     expect(response.body.description).toBe(data.description)
     expect(response.body.coverImage).toBe(data.coverImage)
-    expect(response.body.genre[0].name).toBe(data.genre[0].name)
-    expect(response.body.genre[1].name).toBe(data.genre[1].name)
+    expect(JSON.stringify(response.body.genres[0]._id)).toStrictEqual(JSON.stringify(data.genres[0]._id))
     expect(response.status).toBe(201)
 
     const dbRecord = await Movie.exists({ title: data.title });
@@ -39,6 +82,7 @@ describe("Create movie test", () => {
 
   it("Should return user not authenticated", async () => {
     const response = await request(app).post("/api/movies/create").send(data)
+    console.log(response.body);
 
     expect(response.body.errors[0].msg).toBe("User not authenticated!")
     expect(response.status).toBe(401)
@@ -58,8 +102,7 @@ describe("Create movie test", () => {
     expect(response.body.title).toBe(data.title)
     expect(response.body.description).toBe(data.description)
     expect(response.body.coverImage).toBe(data.coverImage)
-    expect(response.body.genre[0].name).toBe(data.genre[0].name)
-    expect(response.body.genre[1].name).toBe(data.genre[1].name)
+    expect(JSON.stringify(response.body.genres[0]._id)).toStrictEqual(JSON.stringify(data.genres[0]._id))
     expect(response.status).toBe(201)
 
     const response1 = await request(app).post("/api/movies/create").set("Cookie", cookie[0]).send(data)
