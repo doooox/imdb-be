@@ -25,7 +25,7 @@ export const getSingleMovie = async (req: Request, res: Response) => {
 export const getSearchedMovies = async (req: Request, res: Response) => {
   const { search } = req.query
 
-  const searchedMovies = await Movie.find({ title: { $regex: search, $options: "i" } })
+  const searchedMovies = await Movie.find({ title: { $regex: search, $options: "i" } }).select("_id, title ").limit(5)
 
   res.status(200).json(searchedMovies)
 }
