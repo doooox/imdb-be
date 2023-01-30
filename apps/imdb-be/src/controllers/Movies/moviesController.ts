@@ -22,6 +22,14 @@ export const getSingleMovie = async (req: Request, res: Response) => {
 
 }
 
+export const getSearchedMovies = async (req: Request, res: Response) => {
+  const { search } = req.query
+
+  const searchedMovies = await Movie.find({ title: { $regex: search, $options: "i" } })
+
+  res.status(200).json(searchedMovies)
+}
+
 export const createMovie = async (req: Request, res: Response) => {
   const { title, description, coverImage, genres } = req.body
 
