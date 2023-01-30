@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
 import Movie from "../../models/Movies/movieModel"
 import Genres from "../../models/Movies/genreModel"
-import { responseObject, responseMessage } from "../../utils/helpers";
+import { responseObject, responseMessage, paginte } from "../../utils/helpers";
 import { IGenres } from "../../types/Movies/moviesTypes";
 
 export const getMovies = async (req: Request, res: Response) => {
 
-  const movies = await Movie.find()
+  const movies = await paginte(Movie.find(), Number(req.query.page))
 
   if (movies) return responseObject(200, res, movies)
   responseMessage(200, res, "No moves were found!")
@@ -33,6 +33,7 @@ export const createMovie = async (req: Request, res: Response) => {
   const movieGenres = await Promise.all(genres.map(async (genre: IGenres) => {
     return await Genres.findById(genre._id)
   }))
+
 
   const movie = await Movie.create({
     title,

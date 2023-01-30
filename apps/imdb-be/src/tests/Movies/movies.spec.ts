@@ -49,9 +49,10 @@ export const createMovie = async () => {
 describe("Get movies test", () => {
   it("Should return get route", async () => {
     await createMovie()
-    const response = await request(app).get("/api/movies").set("Cookie", cookie[0])
+    const response = await request(app).get("/api/movies/?page=1").set("Cookie", cookie[0])
 
-    expect(response.body[0].title).toBe(data.title)
+
+    expect(response.body.data[0].title).toBe(data.title)
     expect(response.status).toBe(200)
   })
 
@@ -69,7 +70,6 @@ describe("Create movie test", () => {
     const response = await createMovie()
 
 
-
     expect(response.body.title).toBe(data.title)
     expect(response.body.description).toBe(data.description)
     expect(response.body.coverImage).toBe(data.coverImage)
@@ -82,7 +82,6 @@ describe("Create movie test", () => {
 
   it("Should return user not authenticated", async () => {
     const response = await request(app).post("/api/movies/create").send(data)
-    console.log(response.body);
 
     expect(response.body.errors[0].msg).toBe("User not authenticated!")
     expect(response.status).toBe(401)

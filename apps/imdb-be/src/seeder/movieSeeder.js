@@ -11,7 +11,7 @@ const faker = require('@faker-js/faker');
     const genre = await genresCollection.find({}).toArray();
 
     const movies = [];
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 100; i++) {
       const movie = {
         title: faker.faker.name.fullName(),
         description: faker.faker.lorem.paragraphs(),
