@@ -2,15 +2,29 @@ import { Request, Response } from "express";
 import Movie from "../../models/Movies/movieModel"
 import Genres from "../../models/Movies/genreModel"
 import { responseObject, responseMessage, paginte } from "../../utils/helpers";
-import { IGenres } from "../../types/Movies/moviesTypes";
+import { IGenres, IMovie } from "../../types/Movies/moviesTypes";
+import { Pagination } from "../../types/pagination/pagination.types";
+
 
 export const getMovies = async (req: Request, res: Response) => {
+  const genres = req.body.genres
+  let movies: Pagination<IMovie> | undefined;
+  if (genres) {
 
-  const movies = await paginte(Movie.find(), Number(req.query.page))
+    try {
+      const query = Movie.find({ 'genres': { $elemMatch: { _id: genres } } })
+      movies = await paginte(query, Number(req.query.page))
+
+    } catch (error) {
+      responseMessage(200, res, "No moves were found!")
+    }
+
+  } else {
+    const query = Movie.find()
+    movies = await paginte(query, Number(req.query.page))
+  }
 
   if (movies) return responseObject(200, res, movies)
-  responseMessage(200, res, "No moves were found!")
-
 }
 
 export const getSingleMovie = async (req: Request, res: Response) => {
