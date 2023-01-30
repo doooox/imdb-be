@@ -51,7 +51,6 @@ describe("Get movies test", () => {
     await createMovie()
     const response = await request(app).get("/api/movies/?page=1").set("Cookie", cookie[0])
 
-
     expect(response.body.data[0].title).toBe(data.title)
     expect(response.status).toBe(200)
   })
@@ -63,6 +62,22 @@ describe("Get movies test", () => {
     expect(response.body.errors[0].msg).toBe("User not authenticated!")
     expect(response.status).toBe(401)
   })
+})
+it("Should return filtered movies", async () => {
+  await createMovie()
+  const response = await request(app).get("/api/movies/?page=1").send({
+    genres: [
+      testGenre._id
+    ]
+  }).set("Cookie", cookie[0])
+
+  for (let i = 0; i < response.body.data.length; i++) {
+    const movie = response.body.data[i];
+    const genres = movie.genres
+    const exists = genres.some(genre => genre._id == testGenre._id)
+    expect(exists).toBe(true)
+  }
+  expect(response.status).toBe(200)
 })
 
 describe("Create movie test", () => {
