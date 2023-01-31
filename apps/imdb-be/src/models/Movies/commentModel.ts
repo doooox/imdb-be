@@ -8,6 +8,14 @@ export const commentsSchema = new Schema<IComment>({
     type: String,
     required: true,
     maxlength: [500, "Comment can't have more than 500 characters"]
+  },
+  movieId: {
+    type: Schema.Types.ObjectId,
+    ref: "Movie"
+  },
+  userId: {
+    type: Schema.Types.ObjectId,
+    ref: "Auth"
   }
 }, {
   timestamps: true

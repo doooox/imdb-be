@@ -6,7 +6,8 @@ import commentValidator from '../../validator/Movies/commentValidator'
 
 const commentRouter = express.Router()
 
-commentRouter.get("/", isAuth, getComments)
-commentRouter.post("/create", isAuth, commentValidator, validateRequest, createComments)
+commentRouter.post("/create/:movieId", isAuth, commentValidator, validateRequest, createComments)
+commentRouter.get("/:movieId", isAuth, getComments)
+
 
 export default commentRouter

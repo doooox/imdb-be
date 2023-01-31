@@ -22,7 +22,10 @@ const movieSchema = new Schema<IMovie>({
     required: true
   },
   genres: [genresSchema],
-  comments: [commentsSchema]
+  comments: [{
+    type: Schema.Types.ObjectId,
+    ref: "Comment"
+  }]
 }, {
   timestamps: true
 })

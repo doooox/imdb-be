@@ -9,7 +9,7 @@ const commentValidator = checkSchema({
       options: { max: 500 },
       errorMessage: "Comment can't have more than 500 characters"
     }
-  }
+  },
 })
 
 export default commentValidator

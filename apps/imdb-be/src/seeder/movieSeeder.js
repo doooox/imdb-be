@@ -9,8 +9,6 @@ const faker = require('@faker-js/faker');
     const collection = client.db().collection('movies');
     const genresCollection = client.db().collection('genres');
     const genre = await genresCollection.find({}).toArray();
-    const commentsCollection = client.db().collection('comments');
-    const comments = await commentsCollection.find({}).toArray();
 
     const movies = [];
     for (let i = 0; i < 100; i++) {
@@ -28,7 +26,6 @@ const faker = require('@faker-js/faker');
         if (!movie.genres.includes(genre[rundomNumber])) {
           movie.genres.push(genre[rundomNumber]);
         }
-        movie.comments.push(comments[rundomNumber]);
       }
       movies.push(movie);
     }
