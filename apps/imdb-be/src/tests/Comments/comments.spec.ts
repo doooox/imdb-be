@@ -1,0 +1,56 @@
+import { createApp } from "../../app/app";
+import * as request from "supertest"
+import mongoose from 'mongoose';
+import { Cookie } from 'express-session';
+import { createTestUser } from "../Auth/auth.spec";
+
+const app = createApp();
+
+let cookie: Cookie | undefined
+
+afterEach(async () => {
+  if (mongoose.connection.db) {
+    await mongoose.connection.db.dropDatabase()
+  }
+})
+beforeAll(async () => {
+  await createTestUser()
+  const data = { email: 'admin@admin.com', password: "admin123" }
+  const response = await request(app).post("/api/auth/singin").send(data);
+  cookie = response.headers["set-cookie"]
+})
+
+const data = {
+  body: "Comment Test"
+}
+
+export const createComment = async () => {
+  const response = await request(app).post("/api/comments/create").set("Cookie", cookie[0]).send(data)
+  return response
+}
+
+describe("Get comments test", () => {
+  it("Should return get route", async () => {
+    await createComment()
+    const response = await request(app).get("/api/comments/?page=1").set("Cookie", cookie[0])
+
+    expect(response.body.data[0].body).toBe(data.body)
+    expect(response.status).toBe(200)
+  })
+
+  it("Should return comment created", async () => {
+
+    const response = await createComment()
+
+    expect(response.body.body).toBe(data.body)
+    expect(response.status).toBe(201)
+  })
+
+  it("Should return comment body required", async () => {
+    const data = { body: "" }
+    const response = await request(app).post("/api/comments/create").set("Cookie", cookie[0]).send(data)
+
+    expect(response.body.errors[0].msg).toBe("Comment body is required")
+    expect(response.status).toBe(400)
+  })
+})

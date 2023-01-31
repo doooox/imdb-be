@@ -1,9 +1,12 @@
+import { IComment } from "./comments.types"
+
 export interface IMovie {
   _id: string,
   title: string,
   description: string,
   coverImage: string,
-  genres: IGenres[]
+  genres: IGenres[],
+  comments?: IComment[]
 }
 
 export interface IGenres {

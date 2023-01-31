@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { IMovie } from "../../types/Movies/moviesTypes";
+import { commentsSchema } from "./commentModel";
 import { genresSchema } from './genreModel'
 
 const Schema = mongoose.Schema
@@ -20,7 +21,8 @@ const movieSchema = new Schema<IMovie>({
     type: String,
     required: true
   },
-  genres: [genresSchema]
+  genres: [genresSchema],
+  comments: [commentsSchema]
 }, {
   timestamps: true
 })
