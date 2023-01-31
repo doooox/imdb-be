@@ -1,59 +1,50 @@
-import { createApp } from "../../app/app";
-import * as request from "supertest"
+import { createApp } from '../../app/app';
+import * as request from 'supertest';
 import mongoose from 'mongoose';
 import { Cookie } from 'express-session';
-import { createTestUser } from "../Auth/auth.spec";
-import { IComment } from "../../types/Movies/comments.types";
-import Comment from "../../models/Movies/commentModel"
-import { IGenres } from "../../types/Movies/moviesTypes";
-import { createMovie } from "../Movies/movies.spec";
+import { createTestUser } from '../Auth/auth.spec';
+import { IComment } from '../../types/Movies/comments.types';
+import Comment from '../../models/Movies/commentModel';
+import { IGenres } from '../../types/Movies/moviesTypes';
+import { createMovie } from '../Movies/movies.spec';
 
 const app = createApp();
 
-let cookie: Cookie | undefined
+let cookie: Cookie | undefined;
 
 afterEach(async () => {
   if (mongoose.connection.db) {
-    await mongoose.connection.db.dropDatabase()
+    await mongoose.connection.db.dropDatabase();
   }
-})
+});
 beforeAll(async () => {
-  await createTestUser()
-  const data = { email: 'admin@admin.com', password: "admin123" }
-  const response = await request(app).post("/api/auth/singin").send(data);
-  cookie = response.headers["set-cookie"]
-})
+  await createTestUser();
+  const data = { email: 'admin@admin.com', password: 'admin123' };
+  const response = await request(app).post('/api/auth/singin').send(data);
+  cookie = response.headers['set-cookie'];
+});
 
 const commentData = {
-  body: "Comment test"
-}
+  body: 'Comment test',
+};
 export const createComment = async () => {
   const respones = await createMovie();
 
-  const respone1 = await request(app).post(`/api/comments/create/${respones.body._id}`).send(commentData).set("Cookie", cookie[0])
-  console.log("response1", respone1.body);
+  const respone1 = await request(app)
+    .post(`/api/comments/create/${respones.body._id}`)
+    .send(commentData)
+    .set('Cookie', cookie[0]);
+  console.log('response1', respone1.body);
 
-  return respone1
-}
+  return respone1;
+};
 
-describe("Get comments test", () => {
-  it("Should return get route", async () => {
-    const comment = await createComment()
-    const response = await request(app).get(`/api/comments/${comment.body.movieId}/?page=1`).set("Cookie", cookie[0])
-    // console.log(response.body);
-
-
-    expect(response.body.data[0].body).toBe(commentData.body)
-    expect(response.status).toBe(200)
-  })
-
-  // it("Should return comment created", async () => {
-
-  //   const response = await createComment()
-
-  //   expect(response.body.body).toBe(data.body)
-  //   expect(response.status).toBe(201)
-  // })
+describe('Get comments test', () => {
+  it('Should return comment created', async () => {
+    const response = await createComment();
+    expect(response.body.body).toBe(commentData.body);
+    expect(response.status).toBe(201);
+  });
 
   // it("Should return comment body required", async () => {
   //   const data = { body: "" }
@@ -62,4 +53,4 @@ describe("Get comments test", () => {
   //   expect(response.body.errors[0].msg).toBe("Comment body is required")
   //   expect(response.status).toBe(400)
   // })
-})
+});

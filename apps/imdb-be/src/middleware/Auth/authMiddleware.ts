@@ -1,31 +1,26 @@
-import { NextFunction, Request, Response } from "express";
-import { responseMessage } from "../../utils/helpers";
+import { NextFunction, Request, Response } from 'express';
+import { responseMessage } from '../../utils/helpers';
 
 export const isAuth = (req: Request, res: Response, next: NextFunction) => {
-
   if (req.session.user) {
-    next()
+    next();
   } else {
-    responseMessage(401, res, "User not authenticated!")
+    responseMessage(401, res, 'User not authenticated!');
   }
-}
+};
 
 export const isNotAuth = (req: Request, res: Response, next: NextFunction) => {
-
   if (!req.session.user) {
-    next()
+    next();
   } else {
-    responseMessage(403, res, "User already authenticated")
+    responseMessage(403, res, 'User already authenticated');
   }
-
-}
+};
 
 export const isAdmin = (req: Request, res: Response, next: NextFunction) => {
-
   if (req.session.user.isAdmin) {
-    next()
+    next();
   } else {
-    responseMessage(403, res, "You are not an admin")
+    responseMessage(403, res, 'You are not an admin');
   }
-
-}
+};

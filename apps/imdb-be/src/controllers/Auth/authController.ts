@@ -1,72 +1,69 @@
-import { Request, Response } from "express";
-import Auth from "../../models/Auth/authModel"
-import { genSalt, hash, compare } from "bcryptjs";
-import { responseMessage } from "../../utils/helpers";
-import { isAdmin } from "../../middleware/Auth/authMiddleware";
+import { Request, Response } from 'express';
+import Auth from '../../models/Auth/authModel';
+import { genSalt, hash, compare } from 'bcryptjs';
+import { responseMessage } from '../../utils/helpers';
 
 export const singupUser = async (req: Request, res: Response) => {
-  const { email, name, password, confirmPassword } = req.body
+  const { email, name, password, confirmPassword } = req.body;
 
   if (password !== confirmPassword) {
-    return responseMessage(400, res, "Passwords don't match!")
+    return responseMessage(400, res, "Passwords don't match!");
   }
 
-  const userExists = await Auth.exists({ email })
+  const userExists = await Auth.exists({ email });
 
   if (userExists) {
-    return responseMessage(403, res, "User already registerd!")
+    return responseMessage(403, res, 'User already registerd!');
   }
 
-  const salt = await genSalt(10)
-  const hashedPassword = await hash(password, salt)
+  const salt = await genSalt(10);
+  const hashedPassword = await hash(password, salt);
 
   const user = await Auth.create({
     name,
     email,
-    password: hashedPassword
-  })
+    password: hashedPassword,
+  });
 
   if (user) {
-    req.session.user = user
+    req.session.user = user;
 
     return res.status(201).send({
       name: user.name,
-      email: user.email
-    })
+      email: user.email,
+    });
   }
-  responseMessage(400, res, "Invalid user data")
-}
+  responseMessage(400, res, 'Invalid user data');
+};
 
 export const singiUser = async (req: Request, res: Response) => {
-  const { email, password } = req.body
-  const user = await Auth.findOne({ email })
+  const { email, password } = req.body;
+  const user = await Auth.findOne({ email });
 
   if (!user) {
-    return responseMessage(404, res, "Invalid email or password")
+    return responseMessage(404, res, 'Invalid email or password');
   }
 
-  const matchingPasswords = await compare(password, user.password)
+  const matchingPasswords = await compare(password, user.password);
 
   if (!matchingPasswords) {
-    return responseMessage(400, res, "Invalid email or password")
+    return responseMessage(400, res, 'Invalid email or password');
   }
 
-  req.session.user = user
+  req.session.user = user;
 
   res.status(201).send({
     name: user.name,
     email: user.email,
-    isAdmin: user.isAdmin
-  })
-}
+    isAdmin: user.isAdmin,
+  });
+};
 
 export const singoutUser = async (req: Request, res: Response) => {
-  req.session.destroy(err => {
+  req.session.destroy((err) => {
     if (err) {
-      return responseMessage(400, res, "Unable to log out!")
+      return responseMessage(400, res, 'Unable to log out!');
     }
-    res.status(200).json({ message: "User is logged out" })
-  })
-
-}
-
+    res.status(200).json({ message: 'User is logged out' });
+  });
+};

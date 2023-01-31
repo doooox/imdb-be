@@ -1,6 +1,6 @@
 #!/bin/bash
 
 npm install
-./seeder.sh
+# ./seeder.sh
 cd apps/imdb-be
 npx nx test
