@@ -5,7 +5,6 @@ import { responseMessage, responseObject, paginte } from "../../utils/helpers";
 
 export const getComments = async (req: Request, res: Response) => {
   const { movieId } = req.params
-  console.log("get comments", movieId);
 
   if (!movieId) return responseMessage(400, res, "Movie ID is required")
 
@@ -22,10 +21,6 @@ export const createComments = async (req: Request, res: Response) => {
   const { body } = req.body
   const { movieId } = req.params
   const { _id } = req.session.user
-  console.log(_id);
-
-
-  console.log("create comments", movieId);
 
   if (!movieId) return responseMessage(400, res, "Movie ID is required")
 

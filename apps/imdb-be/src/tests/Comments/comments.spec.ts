@@ -3,9 +3,6 @@ import * as request from 'supertest';
 import mongoose from 'mongoose';
 import { Cookie } from 'express-session';
 import { createTestUser } from '../Auth/auth.spec';
-import { IComment } from '../../types/Movies/comments.types';
-import Comment from '../../models/Movies/commentModel';
-import { IGenres } from '../../types/Movies/moviesTypes';
 import { createMovie } from '../Movies/movies.spec';
 
 const app = createApp();
@@ -34,7 +31,6 @@ export const createComment = async () => {
     .post(`/api/comments/create/${respones.body._id}`)
     .send(commentData)
     .set('Cookie', cookie[0]);
-  console.log('response1', respone1.body);
 
   return respone1;
 };
@@ -42,15 +38,16 @@ export const createComment = async () => {
 describe('Get comments test', () => {
   it('Should return comment created', async () => {
     const response = await createComment();
+
     expect(response.body.body).toBe(commentData.body);
     expect(response.status).toBe(201);
   });
 
-  // it("Should return comment body required", async () => {
-  //   const data = { body: "" }
-  //   const response = await request(app).post("/api/comments/create").set("Cookie", cookie[0]).send(data)
+  it("Should return comment body required", async () => {
+    const data = { body: "" }
+    const response = await request(app).post("/api/comments/create/movieId").set("Cookie", cookie[0]).send(data)
 
-  //   expect(response.body.errors[0].msg).toBe("Comment body is required")
-  //   expect(response.status).toBe(400)
-  // })
+    expect(response.body.errors[0].msg).toBe("Comment body is required")
+    expect(response.status).toBe(400)
+  })
 });

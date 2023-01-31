@@ -51,7 +51,6 @@ export const createMovie = async () => {
     .post('/api/movies/create')
     .set('Cookie', cookie[0])
     .send(data);
-  console.log(response.body);
 
   return response;
 };
