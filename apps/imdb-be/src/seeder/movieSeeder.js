@@ -18,6 +18,7 @@ const faker = require('@faker-js/faker');
         coverImage:
           'https://trailers.apple.com/trailers/paramount/dungeons-dragons-honor-among-thieves/images/poster_2x.jpg',
         genres: [],
+        comments: [],
       };
       const rundomNumber = Math.floor(Math.random() * genre.length);
       for (let i = 0; i < rundomNumber; i++) {
