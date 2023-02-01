@@ -6,3 +6,8 @@ declare module 'express-session' {
     user?: IAuth;
   }
 }
+declare namespace Express {
+  export interface Request {
+    user?: IAuth
+  }
+}
