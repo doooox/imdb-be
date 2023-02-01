@@ -1,63 +1,36 @@
 import { createApp } from '../../app/app';
 import * as request from 'supertest';
 import mongoose from 'mongoose';
+import { createTestMovie, createTestUser } from '../../utils/test-helpers';
+import { IMovie } from '../../types/Movies/moviesTypes';
 import { Cookie } from 'express-session';
-import Movie from '../../models/Movies/movieModel';
-import { createTestUser } from '../Auth/auth.spec';
 import Genres from '../../models/Movies/genreModel';
-import { IGenres, IMovie } from '../../types/Movies/moviesTypes';
+import Movie from '../../models/Movies/movieModel';
 
 const app = createApp();
 
-let cookie: Cookie | undefined;
+const data: IMovie = {
+  _id: '',
+  title: 'Movie test',
+  description: 'Description movie test',
+  coverImage:
+    'https://trailers.apple.com/trailers/paramount/dungeons-dragons-honor-among-thieves/images/poster_2x.jpg',
+  genres: [],
+};
+
 afterEach(async () => {
   if (mongoose.connection.db) {
     await mongoose.connection.db.dropDatabase();
   }
 });
 
-beforeAll(async () => {
-  await createTestUser();
-  const data = { email: 'admin@admin.com', password: 'admin123' };
-  const response = await request(app).post('/api/auth/singin').send(data);
-  cookie = response.headers['set-cookie'];
-});
-
-const genresData = {
-  name: 'genre 1',
-};
-let testGenre: IGenres | undefined = undefined;
-let data: IMovie | undefined = undefined;
-
-beforeEach(async () => {
-  testGenre = await Genres.create(genresData);
-  data = {
-    _id: '123rfdsafd',
-    title: 'Movie test',
-    description: 'Description movie test',
-    coverImage:
-      'https://trailers.apple.com/trailers/paramount/dungeons-dragons-honor-among-thieves/images/poster_2x.jpg',
-    genres: [
-      {
-        _id: testGenre._id,
-        name: testGenre.name,
-      },
-    ],
-  };
-});
-
-export const createMovie = async () => {
-  const response = await request(app)
-    .post('/api/movies/create')
-    .set('Cookie', cookie[0])
-    .send(data);
-
-  return response;
-};
-
 describe('Get movies test', () => {
   it('Should return paginated movie list', async () => {
-    await createMovie();
+    const userResponse = await createTestUser(app);
+    const cookie: Cookie = userResponse.headers['set-cookie'];
+
+    await createTestMovie(app, data, cookie);
+
     const response = await request(app)
       .get('/api/movies/?page=1')
       .set('Cookie', cookie[0]);
@@ -67,34 +40,38 @@ describe('Get movies test', () => {
   });
 
   it('Should return not auth', async () => {
-    await createMovie();
-    const response = await request(app).get('/api/movies');
+    await createTestMovie(app, data, undefined);
 
+    const response = await request(app).get('/api/movies');
     expect(response.body.errors[0].msg).toBe('User not authenticated!');
     expect(response.status).toBe(401);
   });
-});
-it('Should return filtered movies', async () => {
-  await createMovie();
-  const response = await request(app)
-    .get('/api/movies/?page=1')
-    .send({
-      genres: [testGenre._id],
-    })
-    .set('Cookie', cookie[0]);
 
-  for (let i = 0; i < response.body.data.length; i++) {
-    const movie = response.body.data[i];
-    const genres = movie.genres;
-    const exists = genres.some((genre) => genre._id == testGenre._id);
-    expect(exists).toBe(true);
-  }
-  expect(response.status).toBe(200);
-});
+  it('Should return filtered movies', async () => {
+    const userResponse = await createTestUser(app);
+    const cookie: Cookie = userResponse.headers['set-cookie'];
 
-describe('Create movie test', () => {
+    await createTestMovie(app, data, cookie);
+    const response = await request(app)
+      .get('/api/movies/?page=1')
+      .set('Cookie', userResponse.headers['set-cookie'][0]);
+
+    const dbGenre = await Genres.findOne({ name: 'TestGenre' }); // This is created in helpers when movie is created!
+
+    for (let i = 0; i < response.body.data.length; i++) {
+      const movie = response.body.data[i];
+      const genres = movie.genres;
+      const exists = genres.some((genre) => genre._id == dbGenre._id);
+      expect(exists).toBe(true);
+    }
+    expect(response.status).toBe(200);
+  });
+
   it('Should return movie created', async () => {
-    const response = await createMovie();
+    const userResponse = await createTestUser(app);
+    const cookie: Cookie = userResponse.headers['set-cookie'];
+
+    const response = await createTestMovie(app, data, cookie);
 
     expect(response.body.title).toBe(data.title);
     expect(response.body.description).toBe(data.description);
@@ -116,6 +93,8 @@ describe('Create movie test', () => {
   });
 
   it('Should return title field is required', async () => {
+    const userResponse = await createTestUser(app);
+    const cookie: Cookie = userResponse.headers['set-cookie'];
     const data = {
       title: '',
       description: 'Description movie test',
@@ -132,10 +111,10 @@ describe('Create movie test', () => {
   });
 
   it('Should return movie already exists', async () => {
-    const response = await request(app)
-      .post('/api/movies/create')
-      .set('Cookie', cookie[0])
-      .send(data);
+    const userResponse = await createTestUser(app);
+    const cookie: Cookie = userResponse.headers['set-cookie'];
+
+    const response = await createTestMovie(app, data, cookie);
 
     expect(response.body.title).toBe(data.title);
     expect(response.body.description).toBe(data.description);
