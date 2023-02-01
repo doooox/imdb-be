@@ -77,11 +77,15 @@ describe('Get movies test', () => {
 it('Should return filtered movies', async () => {
   await createMovie();
   const response = await request(app)
-    .get('/api/movies/?page=1')
-    .send({
-      genres: [testGenre._id],
+    .get('/api/movies/?page=1/')
+    .query({
+      genres: JSON.stringify([{
+        _id: testGenre._id
+      }])
+
     })
     .set('Cookie', cookie[0]);
+
 
   for (let i = 0; i < response.body.data.length; i++) {
     const movie = response.body.data[i];

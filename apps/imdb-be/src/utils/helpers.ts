@@ -20,8 +20,8 @@ export const responseObject = (status: number, res: Response, object: object) =>
 }
 const paginationLimit = 12
 
-export const paginte = async (query: any, page = 1) => {
-  const skip = (page - 1) * paginationLimit
+export const paginte = async (query: any, page = 1, fixedTotal = 0) => {
+  const skip = (Math.ceil(page) - 1) * paginationLimit
   const paginated = await query.skip(skip).limit(paginationLimit)
 
   let total: number | undefined
@@ -36,7 +36,7 @@ export const paginte = async (query: any, page = 1) => {
       page,
       paginationLimit,
       count: paginated.length,
-      total
+      total: fixedTotal > 0 ? fixedTotal : total
     },
     data: paginated
   }
