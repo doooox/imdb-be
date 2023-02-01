@@ -36,6 +36,17 @@ export const createComment = async () => {
 };
 
 describe('Get comments test', () => {
+  it('Should return movie comments', async () => {
+    const response = await createComment();
+    const respone1 = await request(app).get(`/api/comments/${response.body.movieId}/?page=1`).set("Cookie", cookie[0])
+    console.log(respone1.body);
+
+
+    expect(respone1.body.data[0].body).toBe(commentData.body);
+    expect(response.status).toBe(201);
+  });
+
+
   it('Should return comment created', async () => {
     const response = await createComment();
 
