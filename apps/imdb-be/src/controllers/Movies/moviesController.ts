@@ -7,21 +7,31 @@ import { Pagination } from "../../types/pagination/pagination.types";
 
 
 export const getMovies = async (req: Request, res: Response) => {
-  const genres = req.body.genres
-  let movies: Pagination<IMovie> | undefined;
+  const { genres } = req.query
+
+  let parsedGenres = genres
   if (genres) {
+    parsedGenres = JSON.parse(genres as string)
+  }
 
-    try {
-      const query = Movie.find({ 'genres': { $elemMatch: { _id: genres } } })
+  let movies: Pagination<IMovie> | undefined;
+
+  try {
+    let query
+    let total
+    if (parsedGenres?.length > 0) {
+      query = Movie.find({ 'genres': { $elemMatch: { _id: parsedGenres } } })
+      total = await Movie.find({ 'genres': { $elemMatch: { _id: parsedGenres } } }).count()
+      movies = await paginte(query, Number(req.query.page), total)
+    } else {
+      query = Movie.find()
       movies = await paginte(query, Number(req.query.page))
-
-    } catch (error) {
-      responseMessage(200, res, "No moves were found!")
     }
 
-  } else {
-    const query = Movie.find()
-    movies = await paginte(query, Number(req.query.page))
+  } catch (error) {
+    console.log(error);
+
+    responseMessage(200, res, "No moves were found!")
   }
 
   if (movies) return responseObject(200, res, movies)

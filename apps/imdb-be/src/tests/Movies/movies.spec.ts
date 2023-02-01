@@ -52,11 +52,19 @@ describe('Get movies test', () => {
     const cookie: Cookie = userResponse.headers['set-cookie'];
 
     await createTestMovie(app, data, cookie);
+    const dbGenre = await Genres.findOne({ name: 'TestGenre' }); // This is created in helpers when movie is created!
     const response = await request(app)
       .get('/api/movies/?page=1')
+      .query(
+        {
+          genres: [{
+            _id: dbGenre._id
+          }]
+        }
+      )
       .set('Cookie', userResponse.headers['set-cookie'][0]);
 
-    const dbGenre = await Genres.findOne({ name: 'TestGenre' }); // This is created in helpers when movie is created!
+
 
     for (let i = 0; i < response.body.data.length; i++) {
       const movie = response.body.data[i];
