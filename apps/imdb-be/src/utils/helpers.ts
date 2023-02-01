@@ -1,40 +1,34 @@
-import { Response, Request } from 'express';
+import { Response, Request } from 'express'
 
-export const responseMessage = (
-  status: number,
-  res: Response,
-  message: string
-) => {
+
+
+export const responseMessage = (status: number, res: Response, message: string) => {
   return res.status(status).json({
     errors: [
       {
         value: '',
         msg: message,
-        param: '',
-        location: 'body',
-      },
-    ],
-  });
-};
+        param: "",
+        location: "body"
+      }
+    ]
+  })
+}
 
-export const responseObject = (
-  status: number,
-  res: Response,
-  object: object
-) => {
-  return res.status(status).json(object);
-};
-const paginationLimit = 12;
+export const responseObject = (status: number, res: Response, object: object) => {
+  return res.status(status).json(object)
+}
+const paginationLimit = 12
 
-export const paginte = async (query: any, page = 1) => {
-  const skip = (page - 1) * paginationLimit;
-  const paginated = await query.skip(skip).limit(paginationLimit);
+export const paginte = async (query: any, page = 1, fixedTotal = 0) => {
+  const skip = (Math.ceil(page) - 1) * paginationLimit
+  const paginated = await query.skip(skip).limit(paginationLimit)
 
-  let total: number | undefined;
+  let total: number | undefined
   try {
-    total = await query.model.count();
+    total = await query.model.count()
   } catch (error) {
-    total = await query._model.count();
+    total = await query._model.count()
   }
 
   return {
@@ -42,13 +36,13 @@ export const paginte = async (query: any, page = 1) => {
       page,
       paginationLimit,
       count: paginated.length,
-      total,
+      total: fixedTotal > 0 ? fixedTotal : total
     },
-    data: paginated,
-  };
-};
+    data: paginated
+  }
+}
 
 export const paginatedRequest = async (query: any, req: Request) => {
-  const page: number = req.query['page'] ? Number(req.query['page']) : 1;
-  return paginte(query, page);
-};
+  const page: number = req.query['page'] ? Number(req.query["page"]) : 1
+  return paginte(query, page)
+}

@@ -26,7 +26,13 @@ export const singupUser = async (req: Request, res: Response) => {
   });
 
   if (user) {
-    req.session.user = user;
+
+    req.session.user = {
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      isAdmin: user.isAdmin,
+    };
 
     return res.status(201).send({
       name: user.name,
@@ -50,7 +56,12 @@ export const singiUser = async (req: Request, res: Response) => {
     return responseMessage(400, res, 'Invalid email or password');
   }
 
-  req.session.user = user;
+  req.session.user = {
+    _id: user._id,
+    name: user.name,
+    email: user.email,
+    isAdmin: user.isAdmin,
+  };
 
   res.status(201).send({
     name: user.name,

@@ -1,13 +1,12 @@
-import IAuth from "./types/Auth/authTypes"
-
+import session from 'express-session';
 
 declare module 'express-session' {
-  interface SessionData {
-    user?: IAuth;
-  }
-}
-declare namespace Express {
-  export interface Request {
-    user?: IAuth
+  export interface SessionData {
+    user: {
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      isAdmin: user.isAdmin,
+    };
   }
 }
