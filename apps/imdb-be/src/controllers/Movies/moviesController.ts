@@ -40,6 +40,8 @@ export const getMovies = async (req: Request, res: Response) => {
 export const getSingleMovie = async (req: Request, res: Response) => {
 
   const movie = await Movie.findById(req.params.id)
+  movie.views++
+  movie.save()
 
   if (movie) return res.status(200).json(movie)
   responseMessage(200, res, "No moves were found!")
