@@ -14,3 +14,4 @@ export interface IGenres {
   _id: string;
   name?: string;
 }
+

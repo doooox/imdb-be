@@ -1,5 +1,5 @@
 import { genSalt, hash } from 'bcryptjs';
-import Auth from '../models/Auth/authModel';
+import User from '../models/User/userModel';
 import Genres from '../models/Movies/genreModel';
 import * as request from 'supertest';
 import { Cookie } from 'express-session';
@@ -27,7 +27,7 @@ export const createTestUser = async (
   }
   const salt = await genSalt(10);
   const hashedPassword = await hash(data.password, salt);
-  await Auth.create({
+  await User.create({
     email: data.email,
     name: data.name,
     password: hashedPassword,

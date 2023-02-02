@@ -13,9 +13,9 @@ export const commentsSchema = new Schema<IComment>({
     type: Schema.Types.ObjectId,
     ref: "Movie"
   },
-  userId: {
+  user: {
     type: Schema.Types.ObjectId,
-    ref: "Auth"
+    ref: "User"
   }
 }, {
   timestamps: true

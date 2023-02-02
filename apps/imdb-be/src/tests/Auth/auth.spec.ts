@@ -1,6 +1,6 @@
 import { createApp } from '../../app/app';
 import * as request from 'supertest';
-import Auth from '../../models/Auth/authModel';
+import User from '../../models/User/userModel';
 import mongoose from 'mongoose';
 import { createTestUser } from '../../utils/test-helpers';
 
@@ -25,7 +25,7 @@ describe('Singin test', () => {
     expect(response.body.email).toBe(data.email);
     expect(response.status).toBe(201);
 
-    const dbRecord = await Auth.exists({ email: data.email });
+    const dbRecord = await User.exists({ email: data.email });
     expect(dbRecord).toHaveProperty('_id');
   });
 
