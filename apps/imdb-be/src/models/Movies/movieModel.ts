@@ -28,6 +28,10 @@ const movieSchema = new Schema<IMovie>(
         ref: 'Comment',
       },
     ],
+    views: {
+      type: Number,
+      default: 0
+    },
   },
   {
     timestamps: true,

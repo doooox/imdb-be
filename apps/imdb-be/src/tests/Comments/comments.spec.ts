@@ -13,6 +13,7 @@ const data: IMovie = {
   coverImage:
     'https://trailers.apple.com/trailers/paramount/dungeons-dragons-honor-among-thieves/images/poster_2x.jpg',
   genres: [],
+  views: 0
 };
 
 afterEach(async () => {

@@ -16,6 +16,7 @@ const data: IMovie = {
   coverImage:
     'https://trailers.apple.com/trailers/paramount/dungeons-dragons-honor-among-thieves/images/poster_2x.jpg',
   genres: [],
+  views: 0
 };
 
 afterEach(async () => {
@@ -39,6 +40,21 @@ describe('Get movies test', () => {
     expect(response.status).toBe(200);
   });
 
+  it('Should return single movie', async () => {
+    const userResponse = await createTestUser(app);
+    const cookie: Cookie = userResponse.headers['set-cookie'];
+
+    const movieRespones = await createTestMovie(app, data, cookie);
+
+
+    const response = await request(app)
+      .get(`/api/movies/${movieRespones.body._id}`)
+      .set('Cookie', cookie[0]);
+
+    expect(response.body.title).toBe(data.title);
+    expect(response.body.views).toBe(1)
+    expect(response.status).toBe(200);
+  });
   it('Should return not auth', async () => {
     await createTestMovie(app, data, undefined);
 

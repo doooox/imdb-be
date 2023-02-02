@@ -7,6 +7,7 @@ export interface IMovie {
   coverImage: string;
   genres: IGenres[];
   comments?: IComment[];
+  views: number
 }
 
 export interface IGenres {
