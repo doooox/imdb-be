@@ -8,7 +8,7 @@ export const getComments = async (req: Request, res: Response) => {
 
   if (!movieId) return responseMessage(400, res, "Movie ID is required")
 
-  const commentsQuery = Comment.find({ movieId: req.params.movieId })
+  const commentsQuery = Comment.find({ movieId: req.params.movieId }).sort([["createdAt", "descending"]])
 
   const comments = await paginte(commentsQuery, Number(req.query.page))
 
