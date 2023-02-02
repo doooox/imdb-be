@@ -7,7 +7,7 @@ const bcryptjs = require('bcryptjs');
   const client = new MongoClient(url, {});
   try {
     await client.connect();
-    const collection = client.db().collection('auths');
+    const collection = client.db().collection('users');
     const salt = await bcryptjs.genSalt(10);
     const hashedPassword = await bcryptjs.hash('admin123', salt);
     const data = {

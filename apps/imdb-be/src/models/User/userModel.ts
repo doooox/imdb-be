@@ -1,9 +1,10 @@
 import mongoose from "mongoose";
-import { IAuth } from "../../types/Auth/authTypes"
+import { IUser } from "../../types/User/userTypes";
+
 
 const Schema = mongoose.Schema;
 
-const authSchema = new Schema<IAuth>({
+const userSchema = new Schema<IUser>({
   email: {
     type: String,
     required: true,
@@ -29,4 +30,4 @@ const authSchema = new Schema<IAuth>({
   }
 );
 
-export default mongoose.model('Auth', authSchema);
+export default mongoose.model('User', userSchema);

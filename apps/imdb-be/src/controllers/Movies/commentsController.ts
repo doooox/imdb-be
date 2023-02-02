@@ -8,9 +8,10 @@ export const getComments = async (req: Request, res: Response) => {
 
   if (!movieId) return responseMessage(400, res, "Movie ID is required")
 
-  const commentsQuery = Comment.find({ movieId: req.params.movieId }).sort([["createdAt", "descending"]])
+  const commentsQuery = Comment.find({ movieId: req.params.movieId }).populate("user").sort([["createdAt", "descending"]])
 
   const comments = await paginte(commentsQuery, Number(req.query.page))
+  console.log(comments);
 
   if (comments) return responseObject(200, res, comments)
   responseMessage(200, res, "No comments were found!")
@@ -31,11 +32,12 @@ export const createComments = async (req: Request, res: Response) => {
   const comment = await Comment.create({
     body,
     movieId: movie._id,
-    userId: _id
+    user: _id
   })
 
   movie.comments.push(comment)
   movie.save()
+  await comment.populate("user")
 
   if (comment) return res.status(201).send(comment)
 }

@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import Auth from '../../models/Auth/authModel';
+import User from '../../models/User/userModel';
 import { genSalt, hash, compare } from 'bcryptjs';
 import { responseMessage } from '../../utils/helpers';
 
@@ -10,7 +10,7 @@ export const singupUser = async (req: Request, res: Response) => {
     return responseMessage(400, res, "Passwords don't match!");
   }
 
-  const userExists = await Auth.exists({ email });
+  const userExists = await User.exists({ email });
 
   if (userExists) {
     return responseMessage(403, res, 'User already registerd!');
@@ -19,7 +19,7 @@ export const singupUser = async (req: Request, res: Response) => {
   const salt = await genSalt(10);
   const hashedPassword = await hash(password, salt);
 
-  const user = await Auth.create({
+  const user = await User.create({
     name,
     email,
     password: hashedPassword,
@@ -44,7 +44,7 @@ export const singupUser = async (req: Request, res: Response) => {
 
 export const singiUser = async (req: Request, res: Response) => {
   const { email, password } = req.body;
-  const user = await Auth.findOne({ email });
+  const user = await User.findOne({ email });
 
   if (!user) {
     return responseMessage(404, res, 'Invalid email or password');
