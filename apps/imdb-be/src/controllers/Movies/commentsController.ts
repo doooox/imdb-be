@@ -11,7 +11,6 @@ export const getComments = async (req: Request, res: Response) => {
   const commentsQuery = Comment.find({ movieId: req.params.movieId }).populate("user").sort([["createdAt", "descending"]])
 
   const comments = await paginte(commentsQuery, Number(req.query.page))
-  console.log(comments);
 
   if (comments) return responseObject(200, res, comments)
   responseMessage(200, res, "No comments were found!")

@@ -23,7 +23,12 @@ const userSchema = new Schema<IUser>({
   isAdmin: {
     type: Boolean,
     default: false
-  }
+  },
+  likes: [{
+    type: Schema.Types.ObjectId,
+    ref: "Like",
+    default: []
+  }]
 },
   {
     timestamps: true,

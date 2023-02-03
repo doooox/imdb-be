@@ -1,4 +1,5 @@
 import { IComment } from './comments.types';
+import { ILike } from './likes.types';
 
 export interface IMovie {
   _id: string;
@@ -8,6 +9,7 @@ export interface IMovie {
   genres: IGenres[];
   comments?: IComment[];
   views: number
+  likes?: ILike[]
 }
 
 export interface IGenres {
