@@ -1,33 +1,52 @@
 import { Request, Response } from "express";
 import Movie from "../../models/Movies/movieModel"
 import Genres from "../../models/Movies/genreModel"
+import Like from "../../models/Movies/likeModel"
 import { responseObject, responseMessage, paginte } from "../../utils/helpers";
-import { IGenres, IMovie } from "../../types/Movies/moviesTypes";
+import { IGenres } from "../../types/Movies/moviesTypes";
 import { Pagination } from "../../types/pagination/pagination.types";
+import { IMovieLike } from "../../types/Movies/likes.types";
+
 
 
 export const getMovies = async (req: Request, res: Response) => {
   const { genres } = req.query
+  const { _id } = req.session.user
 
   let parsedGenres = genres
   if (genres) {
     parsedGenres = JSON.parse(genres as string)
   }
 
-  let movies: Pagination<IMovie> | undefined;
+  let movies: Pagination<IMovieLike[]> | undefined;
 
   try {
     let query
     let total
     if (parsedGenres?.length > 0) {
-      query = Movie.find({ 'genres': { $elemMatch: { _id: parsedGenres } } })
+      query = Movie.find({ 'genres': { $elemMatch: { _id: parsedGenres } } }, ["_id", "title", "coverImage", "genres", "views"]).lean()
       total = await Movie.find({ 'genres': { $elemMatch: { _id: parsedGenres } } }).count()
       movies = await paginte(query, Number(req.query.page), total)
     } else {
-      query = Movie.find()
+      query = Movie.find({}, ["_id", "title", "coverImage", "genres", "views"]).lean()
       movies = await paginte(query, Number(req.query.page))
     }
-
+    movies.data = await Promise.all(movies.data?.map(async (movie) => {
+      const likeData = await Like.findOne({ movie: movie._id, user: _id })
+      const totalLikes = await Like.count({ movie: movie._id, state: "like" })
+      const totalDislikes = await Like.count({ movie: movie._id, state: "dislike" })
+      return {
+        ...movie,
+        likeData: {
+          state: likeData?.state,
+          user: likeData?.user,
+          movie: likeData?.movie,
+          _id: likeData?._id,
+          totalLikes,
+          totalDislikes
+        }
+      }
+    }))
   } catch (error) {
     console.log(error);
 
