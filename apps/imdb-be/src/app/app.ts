@@ -8,6 +8,7 @@ import { serve, setup } from 'swagger-ui-express';
 import * as swaggerDocument from './swagger.json';
 import { socket } from '../services/config/socketService';
 import { createServer } from 'http';
+import { syncWithAlgolia } from '../services/config/algoliaService';
 
 export const createApp = () => {
   connectDB();
@@ -66,6 +67,9 @@ export const createAppWithSockets = () => {
   app.get('/api-docs', setup(swaggerDocument));
 
   socket(app)
+  syncWithAlgolia()
   return app;
 };
+
+
 
