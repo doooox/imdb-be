@@ -6,6 +6,8 @@ import { responseObject, responseMessage, paginte } from "../../utils/helpers";
 import { IGenres } from "../../types/Movies/moviesTypes";
 import { Pagination } from "../../types/pagination/pagination.types";
 import { IMovieLike } from "../../types/Movies/likes.types";
+import { sendMail } from "../../services/config/mailService";
+import User from "../../models/User/userModel"
 
 
 
@@ -96,6 +98,13 @@ export const createMovie = async (req: Request, res: Response) => {
   })
 
   if (movie) {
+
+    const admins = await User.find({ isAdmin: true }, ["email"])
+    sendMail(admins.map((admin) => admin.email), "Movie Created", "Movie successfuly creted", "createMovieEmail", {
+      movieName: movie.title,
+      author: req.session.user.name,
+      movieDescription: movie.description
+    })
     return res.status(201).send(movie)
   }
 
