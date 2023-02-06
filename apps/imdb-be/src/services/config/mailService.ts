@@ -8,8 +8,8 @@ const transport = nodemailer.createTransport({
   host: process.env.NX_MAILTRAP_HOST,
   port: process.env.NX_MAILTRAP_PORT,
   auth: {
-    user: process.env.NX_MAILTRA_USER,
-    pass: process.env.NX_MAILTRA_PASSWORD
+    user: process.env.NX_MAILTRAP_USER,
+    pass: process.env.NX_MAILTRAP_PASSWORD
 
   }
 });
