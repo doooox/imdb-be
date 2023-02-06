@@ -1,6 +1,7 @@
 import * as nodemailer from "nodemailer"
 import { existsSync } from "fs";
 import { renderFile } from "ejs"
+import { resolve } from "path";
 
 
 
@@ -27,16 +28,16 @@ export const sendMail = async (to: string[], subject: string, text: string, file
 
 
   try {
-    to.forEach(user => {
+    for (let i = 0; i < to.length; i++) {
       const message = {
         from: "NoReplay@mail.com",
-        to: user,
+        to: to[i],
         subject,
         text,
         html: htmlRender
       };
-      transport.sendMail(message)
-    })
+      await transport.sendMail(message)
+    }
     return true
   } catch (error) {
     console.log(error);
@@ -44,3 +45,4 @@ export const sendMail = async (to: string[], subject: string, text: string, file
   }
 
 }
+

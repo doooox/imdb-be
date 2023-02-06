@@ -98,6 +98,7 @@ export const createMovie = async (req: Request, res: Response) => {
   })
 
   if (movie) {
+
     const admins = await User.find({ isAdmin: true }, ["email"])
     sendMail(admins.map((admin) => admin.email), "Movie Created", "Movie successfuly creted", "createMovieEmail", {
       movieName: movie.title,
