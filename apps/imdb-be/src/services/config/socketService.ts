@@ -1,10 +1,7 @@
-import * as express from "express";
-import { createServer } from "http";
 import { Server } from "socket.io";
 
-export const socket = () => {
-  const app = express();
-  const httpServer = createServer(app);
+export const socket = (httpServer) => {
+
   const io = new Server(httpServer, {
     cors: {
       origin: "http://localhost:3000",

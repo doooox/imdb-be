@@ -8,10 +8,11 @@ import * as cookieParser from 'cookie-parser';
 import { serve, setup } from 'swagger-ui-express';
 import * as swaggerDocument from './swagger.json';
 import { socket } from '../services/config/socketService';
+import { createServer } from 'http';
 
 export const createApp = () => {
   connectDB();
-  socket()
+
   const app = express();
   app.use(cors(corsOptions));
 
@@ -38,3 +39,35 @@ export const createApp = () => {
   app.get('/api-docs', setup(swaggerDocument));
   return app;
 };
+export const createAppWithSockets = () => {
+  connectDB();
+
+  const app = express();
+  app.use(cors(corsOptions));
+
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
+  app.set('trust proxy', 1);
+  // app.use(cookieParser())
+  app.use(
+    session({
+      name: 'session',
+      secret: process.env.NX_SESSION_SECRET,
+      resave: false,
+      saveUninitialized: false,
+      cookie: {
+        secure: false,
+        maxAge: 1000 * 60 * 60 * 3,
+        httpOnly: true,
+      },
+    })
+  );
+
+  app.use('/api', router);
+  app.use('/api-docs', serve);
+  app.get('/api-docs', setup(swaggerDocument));
+  const httpServer = createServer(app);
+  socket(httpServer)
+  return app;
+};
+
