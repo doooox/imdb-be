@@ -64,8 +64,8 @@ export const createAppWithSockets = () => {
   app.use('/api', router);
   app.use('/api-docs', serve);
   app.get('/api-docs', setup(swaggerDocument));
-  const httpServer = createServer(app);
-  socket(httpServer)
+
+  socket(app)
   return app;
 };
 

@@ -16,6 +16,12 @@ const bcryptjs = require('bcryptjs');
       password: hashedPassword,
       isAdmin: true,
     };
+    const data2 = {
+      email: 'admin1@admin.com',
+      name: 'Admin',
+      password: hashedPassword,
+      isAdmin: true,
+    };
     const users = [];
     for (let i = 0; i < 10; i++) {
       const user = {
@@ -27,6 +33,7 @@ const bcryptjs = require('bcryptjs');
       users.push(user);
     }
     users.push(data);
+    users.push(data2);
     await collection.deleteMany();
     await collection.insertMany(users);
     console.log(`${users.length} users seeded`);
