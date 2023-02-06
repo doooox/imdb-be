@@ -20,7 +20,8 @@ export const sendMail = async (to: string[], subject: string, text: string, file
   const path = `/home/dusan/Desktop/Praksa/imdb-app/imdb-be/apps/imdb-be/emails/${file}.ejs`
 
   if (!existsSync(path)) {
-    throw new Error("Email template not foud!")
+    console.warn('Template not found')
+    return
   }
   const htmlRender = await renderFile(path, variable, {
     async: true
