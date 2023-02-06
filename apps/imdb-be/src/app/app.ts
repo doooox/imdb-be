@@ -7,9 +7,11 @@ import { corsOptions } from '../utils/static';
 import * as cookieParser from 'cookie-parser';
 import { serve, setup } from 'swagger-ui-express';
 import * as swaggerDocument from './swagger.json';
+import { socket } from '../services/config/socketService';
 
 export const createApp = () => {
   connectDB();
+  socket()
   const app = express();
   app.use(cors(corsOptions));
 
