@@ -4,7 +4,6 @@ import router from '../routes/routes';
 import session = require('express-session');
 import * as cors from 'cors';
 import { corsOptions } from '../utils/static';
-import * as cookieParser from 'cookie-parser';
 import { serve, setup } from 'swagger-ui-express';
 import * as swaggerDocument from './swagger.json';
 import { socket } from '../services/config/socketService';
@@ -48,7 +47,6 @@ export const createAppWithSockets = () => {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
   app.set('trust proxy', 1);
-  // app.use(cookieParser())
   app.use(
     session({
       name: 'session',

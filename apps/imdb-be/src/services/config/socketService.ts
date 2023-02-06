@@ -20,6 +20,7 @@ export const socket = (httpServer) => {
       socket.to('like-room').emit("movie-liked")
     })
   });
+  const port = Number(process.env.NX_PORT) + 1;
 
-  httpServer.listen(5001);
+  httpServer.listen(port);
 }
